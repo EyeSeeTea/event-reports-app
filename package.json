@@ -1,6 +1,6 @@
 {
   "name": "event-reports-app",
-  "version": "33.2.21",
+  "version": "33.2.21-ocg1",
   "description": "Event reports app",
   "main": "index.html",
   "scripts": {
@@ -62,6 +62,8 @@
       "url": "",
       "name": "DHIS2 visualization team"
     },
+    "short_name": "event-reports",
+    "core_app": true,
     "activities": {
       "dhis": {
         "href": "..",
