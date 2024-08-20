@@ -5,7 +5,7 @@ import isBoolean from 'd2-utilizr/lib/isBoolean';
 import isObject from 'd2-utilizr/lib/isObject';
 import isEmpty from 'd2-utilizr/lib/isEmpty';
 
-import { Dimension as d2aDimension } from 'd2-analysis';
+import { Dimension as d2aDimension, util } from 'd2-analysis';
 
 export var Dimension = function(refs, c, applyConfig, forceApplyConfig) {
     var t = this;
@@ -73,8 +73,8 @@ Dimension.prototype.url = function(isSorted, response, isFilter) {
         url += ':' + records.join(';');
     }
 
-    if (isString(this.filter)) {
-        url += ':' + this.filter;
+    if (isString(this.filter)) {
+        url += ':' + util.sanitize.escape(this.filter);
     }
 
     return url;

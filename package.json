@@ -1,6 +1,6 @@
 {
   "name": "event-reports-app",
-  "version": "33.2.21",
+  "version": "33.2.68-ocg1",
   "description": "Event reports app",
   "main": "index.html",
   "scripts": {
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/dhis2/event-reports-app#readme",
   "dependencies": {
-    "d2-analysis": "33.2.24",
+    "d2-analysis": "../d2-analysis",
     "d2-utilizr": "0.2.13"
   },
   "devDependencies": {
@@ -62,6 +62,8 @@
       "url": "",
       "name": "DHIS2 visualization team"
     },
+    "short_name": "event-reports",
+    "core_app": true,
     "activities": {
       "dhis": {
         "href": "..",
