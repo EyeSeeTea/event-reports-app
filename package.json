@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/dhis2/event-reports-app#readme",
   "dependencies": {
-    "d2-analysis": "^33.3.4",
+    "d2-analysis": "../d2-analysis",
     "d2-utilizr": "0.2.13"
   },
   "devDependencies": {
@@ -53,6 +53,7 @@
     "webpack-dev-server": "1.14.0"
   },
   "manifest.webapp": {
+    "core_app": true,
     "short_name": "event-reports",
     "name": "DHIS2 event reports app",
     "icons": {
