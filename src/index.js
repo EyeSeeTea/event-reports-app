@@ -149,6 +149,17 @@ function initialize() {
             instanceManager.postDataStatistics();
         };
 
+        const handleRenderError = (error) => {
+            console.error("Event report render failed with", error);
+            uiManager.update();
+            uiManager.removeScrollFn("centerRegion");
+            uiManager.removeResizeFn("centerRegion");
+            uiManager.alert({
+                status: "ERROR",
+                message: i18nManager.get("table_render_failed")
+            });
+        };
+
         let createPivotTable = function(layout, response) {
 
             let statusBar = uiManager.get('statusBar');
@@ -165,19 +176,23 @@ function initialize() {
                 layout.sort();
             }
 
-            let _table = new table.PivotTable(refs, layout, response, tableOptions);
+            try {
+                let _table = new table.PivotTable(refs, layout, response, tableOptions);
 
-            if (_table.doClipping()) {
-                uiManager.confirmRender(
-                    `Table size warning`,
-                    () => renderTable(_table, layout, sortingId),
-                    () =>  {
-                        uiManager.update();
-                        uiManager.unmask();
-                    }
-                );
-            } else {
-                renderTable(_table, layout, sortingId);
+                if (_table.doClipping()) {
+                    uiManager.confirmRender(
+                        `Table size warning`,
+                        () => renderTable(_table, layout, sortingId),
+                        () =>  {
+                            uiManager.update();
+                            uiManager.unmask();
+                        }
+                    );
+                } else {
+                    renderTable(_table, layout, sortingId);
+                }
+            } catch (error) {
+                handleRenderError(error);
             }
 
             afterLoad();
