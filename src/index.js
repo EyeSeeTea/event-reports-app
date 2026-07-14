@@ -150,13 +150,13 @@ function initialize() {
         };
 
         const handleRenderError = (error) => {
-            console.error("Event report render failed with", error);
+            console.error('Event report render failed with', error);
             uiManager.update();
-            uiManager.removeScrollFn("centerRegion");
-            uiManager.removeResizeFn("centerRegion");
+            uiManager.removeScrollFn('centerRegion');
+            uiManager.removeResizeFn('centerRegion');
             uiManager.alert({
-                status: "ERROR",
-                message: i18nManager.get("table_render_failed")
+                status: 'ERROR',
+                message: i18nManager.get('table_render_failed')
             });
         };
 
