@@ -158,6 +158,8 @@ function initialize() {
                 status: 'ERROR',
                 message: i18nManager.get('table_render_failed')
             });
+            // Remove loading mask
+            uiManager.unmask();
         };
 
         let createPivotTable = function(layout, response) {
@@ -191,11 +193,11 @@ function initialize() {
                 } else {
                     renderTable(_table, layout, sortingId);
                 }
+
+                afterLoad();
             } catch (error) {
                 handleRenderError(error);
             }
-
-            afterLoad();
         };
 
         var createEventDataTable = function(layout, response) {
