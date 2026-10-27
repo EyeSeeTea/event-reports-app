@@ -178,20 +178,38 @@ function initialize() {
                 layout.sort();
             }
 
-            try {
-                let _table = new table.PivotTable(refs, layout, response, tableOptions);
+            let createTable = (filterNoData) => {
+                return new table.PivotTable(refs, layout, response, Object.assign({}, tableOptions, { filterNoData }));
+            };
 
-                if (_table.doClipping()) {
-                    uiManager.confirmRender(
+            let renderSafely = (filterNoData) => {
+                try {
+                    renderTable(createTable(filterNoData), layout, sortingId);
+                } catch (error) {
+                    handleRenderError(error);
+                }
+            };
+
+            let cancelRender = () => {
+                uiManager.update();
+                uiManager.unmask();
+            };
+
+            try {
+                let isLargeTable = response.getSize(layout) > tableOptions.renderLimit;
+
+                if (isLargeTable) {
+                    // Lets the user choose before building the table if apply the empty dimensions filter or not.
+                    // With "Hide empty rows" set, rows stay hidden and the choice applies to the other dimensions.
+                    uiManager.confirmHideEmptyItems(
                         `Table size warning`,
-                        () => renderTable(_table, layout, sortingId),
-                        () =>  {
-                            uiManager.update();
-                            uiManager.unmask();
-                        }
+                        () => renderSafely(true),
+                        () => renderSafely(false),
+                        cancelRender,
+                        !!layout.hideEmptyRows
                     );
                 } else {
-                    renderTable(_table, layout, sortingId);
+                    renderTable(createTable(), layout, sortingId);
                 }
 
                 afterLoad();
