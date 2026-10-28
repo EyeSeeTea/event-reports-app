@@ -149,6 +149,20 @@ function initialize() {
             instanceManager.postDataStatistics();
         };
 
+        const handleRenderError = (error) => {
+            console.error('Event report render failed with', error);
+            uiManager.update();
+            uiManager.removeScrollFn('centerRegion');
+            uiManager.removeResizeFn('centerRegion');
+            uiManager.alert({
+                status: 'ERROR',
+                message: i18nManager.get('table_render_failed'),
+                destroyOnBlur: false,
+            });
+            // Remove loading mask
+            uiManager.unmask();
+        };
+
         let createPivotTable = function(layout, response) {
 
             let statusBar = uiManager.get('statusBar');
@@ -165,22 +179,44 @@ function initialize() {
                 layout.sort();
             }
 
-            let _table = new table.PivotTable(refs, layout, response, tableOptions);
+            let createTable = (filterNoData) => {
+                return new table.PivotTable(refs, layout, response, Object.assign({}, tableOptions, { filterNoData }));
+            };
 
-            if (_table.doClipping()) {
-                uiManager.confirmRender(
-                    `Table size warning`,
-                    () => renderTable(_table, layout, sortingId),
-                    () =>  {
-                        uiManager.update();
-                        uiManager.unmask();
-                    }
-                );
-            } else {
-                renderTable(_table, layout, sortingId);
+            let renderSafely = (filterNoData) => {
+                try {
+                    renderTable(createTable(filterNoData), layout, sortingId);
+                } catch (error) {
+                    handleRenderError(error);
+                }
+            };
+
+            let cancelRender = () => {
+                uiManager.update();
+                uiManager.unmask();
+            };
+
+            try {
+                let isLargeTable = response.getSize(layout) > tableOptions.renderLimit;
+
+                if (isLargeTable) {
+                    // Lets the user choose before building the table if apply the empty dimensions filter or not.
+                    // With "Hide empty rows" set, rows stay hidden and the choice applies to the other dimensions.
+                    uiManager.confirmHideEmptyItems(
+                        `Table size warning`,
+                        () => renderSafely(true),
+                        () => renderSafely(false),
+                        cancelRender,
+                        !!layout.hideEmptyRows
+                    );
+                } else {
+                    renderTable(createTable(), layout, sortingId);
+                }
+
+                afterLoad();
+            } catch (error) {
+                handleRenderError(error);
             }
-
-            afterLoad();
         };
 
         var createEventDataTable = function(layout, response) {

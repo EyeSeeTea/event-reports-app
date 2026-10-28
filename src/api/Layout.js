@@ -378,7 +378,7 @@ Layout.prototype.req = function(source, format, isSorted, isTableLayout, isFilte
         request.add('tableLayout=true');
 
         // id scheme
-        request.add('dataIdScheme=NAME');
+        request.add('dataIdScheme=CODE');
 
         // columns
         //request.add('columns=' + this.getDimensionNames(false, false, this.columns).join(';'));
