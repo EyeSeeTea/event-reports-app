@@ -156,7 +156,8 @@ function initialize() {
             uiManager.removeResizeFn('centerRegion');
             uiManager.alert({
                 status: 'ERROR',
-                message: i18nManager.get('table_render_failed')
+                message: i18nManager.get('table_render_failed'),
+                destroyOnBlur: false,
             });
             // Remove loading mask
             uiManager.unmask();
